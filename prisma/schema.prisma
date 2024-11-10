@@ -1,0 +1,95 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    SUPER_ADMIN
+    ADMIN
+    USER
+}
+
+//! User
+model User {
+    id                       Int       @id @default(autoincrement())
+    firstname                String
+    lastname                 String
+    email                    String    @unique
+    password                 String
+    phone_number             String    @unique
+    role                     Role
+    avatar                   String?
+    resetPasswordToken       String?
+    resetPasswordTokenExpiry DateTime?
+    createdAt                DateTime  @default(now()) @map("created_at")
+    updatedAt                DateTime  @updatedAt @map("updated_at")
+
+    blogs_approved Blog[] @relation("ApprovedBlogs")
+    blogs_author   Blog[] @relation("BlogAuthor")
+}
+
+//! Category Table
+model Category {
+    id            Int      @id @default(autoincrement())
+    category_name String   @unique
+    category_icon String
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+}
+
+//! District Table
+
+model District {
+    id            Int      @id @default(autoincrement())
+    district_name String   @unique
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+}
+
+//! ContactUs form Business
+model ContactUs {
+    id             Int      @id @default(autoincrement())
+    business_name  String
+    email          String   @unique
+    address        String
+    phone_number   String?  @unique
+    contact_person String
+    createdAt      DateTime @default(now()) @map("created_at")
+    updatedAt      DateTime @updatedAt @map("updated_at")
+}
+
+//! Venue Table
+model Venue {
+    id             Int      @id @default(autoincrement())
+    venue_name     String   @unique
+    venue_address  String
+    contact_person String
+    phone_number   String
+    email          String
+    pan_vat_number String?
+    active         Boolean  @default(false)
+    createdAt      DateTime @default(now()) @map("created_at")
+    updatedAt      DateTime @updatedAt @map("updated_at")
+}
+
+//! Blogs
+model Blog {
+    id                Int      @id @default(autoincrement())
+    title             String   @unique
+    short_description String?
+    image             String
+    description       String
+    is_approved       Boolean?
+    createdAt         DateTime @default(now()) @map("created_at")
+    updatedAt         DateTime @updatedAt @map("updated_at")
+
+    author    User? @relation("BlogAuthor", fields: [author_id], references: [id])
+    author_id Int?
+
+    approved_by    User? @relation("ApprovedBlogs", fields: [approved_by_id], references: [id])
+    approved_by_id Int?
+}
