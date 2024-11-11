@@ -5,6 +5,7 @@ import { createCategory, deleteCategoryById, getAllCategories, getCategoryById, 
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { authenticateToken, authorizeRole } from '../../middleware/authentication.js';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ const storage = multer.diskStorage({
             fs.mkdirSync(dir, { recursive: true });
         }
         cb(null, dir);
-    },
+    }, 
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
@@ -24,12 +25,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.route('/')
-    .get(getAllCategories)
-    .post(upload.single('category_icon'), createCategory)
+    .get(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN','USER'), getAllCategories)
+    .post(upload.single('category_icon'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), createCategory)
 
 router.route('/:id')
-    .get(getCategoryById)
-    .put(upload.single('category_icon'), updateCategory)
-    .delete(deleteCategoryById)
+    .get(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), getCategoryById)
+    .put(upload.single('category_icon'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), updateCategory)
+    .delete(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), deleteCategoryById)
 
 export default router;

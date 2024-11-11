@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { createBlog, deleteBlogById, getAllBlogs, getBlogById, updateBlog } from '../../controllers/blogController.js';
+import { authenticateToken, authorizeRole } from '../../middleware/authentication.js';
 
 
 const router = express.Router()
@@ -23,11 +24,11 @@ const upload = multer({ storage });
 
 router.route('/')
     .get(getAllBlogs)
-    .post(upload.single('image'), createBlog)
+    .post(upload.single('image'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN', 'USER'), createBlog)
 
 router.route('/:id')
     .get(getBlogById)
-    .put(upload.single('image'), updateBlog)
-    .delete(deleteBlogById)
+    .put(upload.single('image'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), updateBlog)
+    .delete(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), deleteBlogById)
 
 export default router;
