@@ -16,6 +16,7 @@ import user from './routes/api/user.js'
 import login from './routes/api/login.js'
 import refresh from './routes/api/refresh.js'
 import product from './routes/api/product.js'
+import booking from './routes/api/booking.js'
 import eventType from './routes/api/eventType.js'
 import forgotPassword from './routes/api/forgotPassword.js'
 import resetPassword from './routes/api/resetPassword.js'
@@ -48,6 +49,7 @@ app.use('/location', location)
 app.use('/blog', blog)
 app.use('/user', user)
 app.use('/product', product)
+app.use('/booking', booking)
 app.use('/eventtype', eventType)
 
 app.use('/login', login)

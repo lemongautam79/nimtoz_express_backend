@@ -187,8 +187,25 @@ export const productSchema = z.object({
         })).optional(),
 });
 
-//! Booking Validation Schema
-export const bookingSchema = z.object({
+//! Create Booking Validation Schema
+export const createBookingSchema = z.object({
+    id: z.coerce.number().optional(),
+    start_date: z.string().optional().refine((val) => !val || !isNaN(Date.parse(val)), { message: "Invalid start_date" }),
+    end_date: z.string().optional().refine((val) => !val || !isNaN(Date.parse(val)), { message: "Invalid end_date" }),
+    start_time: '',
+    end_time: "",
+    Hall: z
+        .array(z.object({
+            hall_name: z.string().min(1, { message: "Hall name is required." }),
+            hall_capacity: z.number().min(1, { message: "Hall capacity must be at least 1." }),
+        })).optional(),
+    userId: z.number().optional(),
+    productId: z.number(),
+    events: z.array(z.string().regex(/^\d+$/, { message: "Each event ID must be a string containing only numbers." })).optional(),
+});
+
+//! Update Booking Validation Schema
+export const updateBookingSchema = z.object({
     id: z.coerce.number().optional(),
     start_date: z.string().optional().refine((val) => !val || !isNaN(Date.parse(val)), { message: "Invalid start_date" }),
     end_date: z.string().optional().refine((val) => !val || !isNaN(Date.parse(val)), { message: "Invalid end_date" }),
