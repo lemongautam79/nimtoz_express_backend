@@ -12,24 +12,19 @@ import contact from './routes/api/contact.js'
 import business from './routes/api/business.js'
 import location from './routes/api/location.js'
 import blog from './routes/api/blog.js'
+import user from './routes/api/user.js'
+import login from './routes/api/login.js'
+import refresh from './routes/api/refresh.js'
+import product from './routes/api/product.js'
+import eventType from './routes/api/eventType.js'
+import forgotPassword from './routes/api/forgotPassword.js'
+import resetPassword from './routes/api/resetPassword.js'
+
 import { countCategory } from './controllers/categoriesController.js';
-import { restResponseTimeHistogram, startMetricsServer } from './utils/metrics.js';
-import responseTime from 'response-time';
 
 const PORT = process.env.PORT || 7000;
 
 const app = express()
-// startMetricsServer();
-
-// app.use(responseTime((req, res, time) => {
-//     if (req?.route?.path) {
-//         restResponseTimeHistogram.observe({
-//             method: req.method,
-//             route: req.route.path,
-//             status_code: res.statusCode
-//         }, time * 1000)
-//     }
-// }))
 
 app.use(cors(corsOptions))
 app.use('/uploads', express.static('uploads'));
@@ -51,6 +46,14 @@ app.use('/contact', contact)
 app.use('/business', business)
 app.use('/location', location)
 app.use('/blog', blog)
+app.use('/user', user)
+app.use('/product', product)
+app.use('/eventtype', eventType)
+
+app.use('/login', login)
+app.use('/refresh_token', refresh)
+app.use('/forgot-password', forgotPassword)
+app.use('/reset-password', resetPassword)
 
 app.get('/404', (req, res) => {
     res.sendStatus(404);
@@ -64,6 +67,8 @@ app.get("/user", (req, res) => {
     }
 });
 
-app.listen(PORT, () =>
-    console.log(`Server running at http://localhost:${PORT}`)
+const ip = "0.0.0.0"
+
+app.listen(PORT, ip, () =>
+    console.log(`Server running at http://localhost:${PORT}-${ip}`)
 ); 

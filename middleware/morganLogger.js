@@ -29,7 +29,7 @@ export const customLogger = (req, res, next) => {
         const statusColor = statusColors[statusCodeRange] || resetColor;
 
         // Get the original URL with query parameters
-        const fullUrl = `${req.protocol}://${req.headers.host}${req.url}`;
+        const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
         const statusMessage = res.statusMessage || '';
         // console.log(statusMessage)
@@ -38,7 +38,7 @@ export const customLogger = (req, res, next) => {
         const timestamp = moment().format('YYYY-MM-DD HH:mm:ss Z   ');
 
         // Format the log entry
-        const logEntry = `${statusColor} ${timestamp}${ tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor}`;
+        const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor}`;
 
         return logEntry;
     };
