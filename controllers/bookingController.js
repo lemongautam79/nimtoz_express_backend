@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer'
 import { createBookingSchema } from "../utils/validationSchema.js";
+import { addMonths, startOfMonth, endOfMonth, format } from 'date-fns';
+
 import { z } from 'zod'
 
 const prisma = new PrismaClient();
@@ -29,6 +31,40 @@ function combineDateAndTime(dateString, timeString) {
     return date;
 }
 
+async function getDashboardBookingStats() {
+    const currentDate = new Date();
+    const monthsArray = [];
+
+    // Loop through the next 12 months
+    for (let i = 0; i < 12; i++) {
+        const currentMonth = addMonths(currentDate, i);
+        const monthStart = startOfMonth(currentMonth);
+        const monthEnd = endOfMonth(currentMonth);
+
+        // Fetch events from the database for the current month
+        const eventsInMonth = await prisma.event.findMany({
+            where: {
+                start_date: {
+                    gte: monthStart,
+                    lte: monthEnd,
+                },
+            },
+        });
+
+        // Count approved and not approved (not approved = !is_approved && !is_rejected)
+        const approvedCount = eventsInMonth.filter(event => event.is_approved).length;
+        const notApprovedCount = eventsInMonth.filter(event => !event.is_approved && !event.is_rejected).length;
+
+        // Push the data into the array
+        monthsArray.push({
+            month: format(currentMonth, 'MMM'), // e.g., "Oct" for October
+            approved: approvedCount,
+            notApproved: notApprovedCount,
+        });
+    }
+
+    return monthsArray;
+}
 
 //! Get All Bookings
 const getAllBookings = async (req, res) => {
@@ -81,6 +117,20 @@ const getAllBookings = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+//! Bookings dashboard ko count 
+const getBookingStats = async (req, res) => {
+    try {
+        const bookingStats = await getDashboardBookingStats();
+
+        if (!bookingStats)
+            return res.status(404).json({ message: "Booking not found" })
+
+        res.status(200).json(bookingStats)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
 
 //! Get Booking by Id
 const getBookingById = async (req, res) => {
@@ -530,6 +580,7 @@ const updateBooking = async (req, res) => {
 export {
     getAllBookings,
     getBookingById,
+    getBookingStats,
     deleteBookingById,
     createBooking,
     updateBooking

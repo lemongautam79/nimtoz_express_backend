@@ -41,7 +41,7 @@ const forgotPassword = async (req, res) => {
             },
         });
 
-        const resetLink = `${process.env.NIMTOZ_URL}/reset-password?token=${token}`;
+        const resetLink = `${process.env.RESET_URL}/reset-password?token=${token}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,

@@ -48,6 +48,37 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+//! Get Top 3 bookers
+const getTopBookers = async (req, res) => {
+    try {
+        const topUsers = await prisma.user.findMany({
+            take: 3,
+            orderBy: {
+                events_booked: {
+                    _count: 'desc',
+                },
+            },
+            where: {
+                events_booked: {
+                    some: {
+                        is_approved: true,
+                    },
+                },
+            },
+            select: {
+                firstname: true,
+                lastname: true,
+                events_booked: true,
+            },
+        });
+
+        if (!topUsers) return res.status(404).json({ success: false })
+        res.json(topUsers)
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
 //! Get User by Id
 const getUserById = async (req, res) => {
     const { id } = req.params;
@@ -153,6 +184,7 @@ const updateUser = async (req, res) => {
 export {
     getAllUsers,
     getUserById,
+    getTopBookers,
     deleteUserById,
     createUser,
     updateUser,

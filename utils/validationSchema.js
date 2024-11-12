@@ -222,7 +222,6 @@ export const updateBookingSchema = z.object({
 
 //! User Register Schema Validation
 export const registerSchema = z.object({
-    id: z.coerce.number().optional(),
     firstname: z.string().min(1, 'First name is required'),
     lastname: z.string().min(1, 'Last name is required'),
     email: z.string().email('Invalid email address'),

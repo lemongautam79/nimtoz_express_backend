@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.route('/')
-    .get(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN','USER'), getAllCategories)
+    .get(getAllCategories)
     .post(upload.single('category_icon'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), createCategory)
 
 router.route('/:id')

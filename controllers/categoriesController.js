@@ -159,11 +159,11 @@ const countCategory = async (req, res) => {
         const categoriesWithProductCount = await prisma.category.findMany({
             select: {
                 category_name: true,
-                // _count: {
-                //     select: {
-                //         products: true,
-                //     }
-                // }
+                _count: {
+                    select: {
+                        products: true,
+                    }
+                }
             },
             orderBy: {
                 updatedAt: "desc"
