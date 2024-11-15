@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 const refreshToken = async (req, res) => {
 
     const { refreshToken } = req.body;
-    if (!refreshToken) return res.sendStatus(401);
 
     try {
+        if (!refreshToken) return res.sendStatus(401);
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
         const user = await prisma.user.findUnique({ where: { id: decoded.id } })
 

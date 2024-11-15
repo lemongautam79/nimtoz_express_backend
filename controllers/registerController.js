@@ -29,6 +29,9 @@ const getAllUsers = async (req, res) => {
 
         const users = await prisma.user.findMany({
             where,
+            include:{
+                events_booked:true
+            },
             orderBy: { updatedAt: 'desc' },
             skip,
             take,

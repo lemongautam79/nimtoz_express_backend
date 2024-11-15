@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { createProduct, deleteProductById, getAllProducts, getProductById, updateProduct } from '../../controllers/productController.js';
+import { authenticateToken, authorizeRole } from '../../middleware/authentication.js';
 
 const router = express.Router();
 
@@ -25,11 +26,11 @@ const upload = multer({ storage: storage });
 
 router.route('/')
     .get(getAllProducts)
-    .post(upload.array('product_image', 10), createProduct)
+    .post(authenticateToken, authorizeRole('ADMIN'), upload.array('product_image', 10), createProduct)
 
 router.route('/:id')
     .get(getProductById)
-    .put(upload.array('product_image', 10), updateProduct)
-    .delete(deleteProductById)
+    .put(authenticateToken, authorizeRole('ADMIN'), upload.array('product_image', 10), updateProduct)
+    .delete(authenticateToken, authorizeRole('ADMIN'), deleteProductById)
 
 export default router;

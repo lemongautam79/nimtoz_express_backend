@@ -24,11 +24,11 @@ const upload = multer({ storage });
 
 router.route('/')
     .get(getAllBlogs)
-    .post(upload.single('image'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN', 'USER'), createBlog)
+    .post(upload.single('image'), authenticateToken, authorizeRole('ADMIN'), createBlog)
 
 router.route('/:id')
     .get(getBlogById)
-    .put(upload.single('image'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), updateBlog)
-    .delete(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), deleteBlogById)
+    .put(upload.single('image'), authenticateToken, authorizeRole('ADMIN'), updateBlog)
+    .delete(authenticateToken, authorizeRole('ADMIN'), deleteBlogById)
 
 export default router;

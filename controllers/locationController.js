@@ -23,6 +23,9 @@ const getAllLocations = async (req, res) => {
 
         const locations = await prisma.district.findMany({
             where,
+            include:{
+                products:true
+            },
             orderBy: { updatedAt: 'desc' },
             skip,
             take,

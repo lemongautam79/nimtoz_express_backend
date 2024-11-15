@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { categorySchema } from "../utils/validationSchema.js";
+import { z } from 'zod'
+
 const prisma = new PrismaClient();
 
 
@@ -36,6 +38,9 @@ const getAllCategories = async (req, res) => {
         // Fetch the data with search, pagination, and ordering
         const categories = await prisma.category.findMany({
             where,
+            include: {
+                products: true
+            },
             orderBy: { updatedAt: 'desc' },
             skip,
             take,
@@ -66,6 +71,32 @@ const getCategoryById = async (req, res) => {
         })
 
         if (!category) return res.status(404).json({ error: `Category ${id} doesn't exist` })
+        res.json({ success: true, category });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+//! Get Category by Product Id
+const getCategoryByProductId = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const productCategory = await prisma.category.findMany({
+            where: {
+                products: {
+                    some: {
+                        id: productId
+                    }
+                }
+            },
+            select: {
+                id: true,
+                category_name: true
+            }
+        })
+
+        if (!productCategory) return res.status(404).json({ error: `Category of product ${id} doesn't exist` })
         res.json({ success: true, category });
 
     } catch (error) {
@@ -112,25 +143,40 @@ const createCategory = async (req, res) => {
         res.status(201).json({ success: true, category })
     } catch (error) {
 
+        // if (error instanceof z.ZodError) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         errors: error.errors.map((e) => e.message)
+        //     });
+        // }
+        // res.status(400).json({ error: error.message });
+
         if (error instanceof z.ZodError) {
             return res.status(400).json({
                 success: false,
                 errors: error.errors.map((e) => e.message)
             });
         }
-        res.status(400).json({ error: error.message });
+
+        // Filter out the specific "must not be null" message if it exists
+        const nullErrorMessage = error.message.match(/`(.+)` must not be null\./);
+        res.status(400).json({
+            error: nullErrorMessage ? nullErrorMessage[0] : error.message
+        });
     }
 }
 
 //! Update a category
 const updateCategory = async (req, res) => {
-    
+
     const { id } = req.params;
     try {
         const validatedData = categorySchema.parse(req.body)
 
-        const categoryIconPath = req.file ? `/uploads/categories/${req.file.filename}` : null;
-
+        const categoryIconPath = req.file
+        ? `/uploads/categories/${req.file.filename}` // New file path
+        : validatedData.category_icon || null; 
+        
         // const { category_name, category_icon } = validatedData;
 
         const category = await prisma.category.update({
@@ -179,6 +225,7 @@ const countCategory = async (req, res) => {
 export {
     getAllCategories,
     getCategoryById,
+    getCategoryByProductId,
     deleteCategoryById,
     createCategory,
     updateCategory,

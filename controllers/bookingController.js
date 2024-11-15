@@ -170,10 +170,9 @@ const deleteBookingById = async (req, res) => {
 //! Create Booking
 const createBooking = async (req, res) => {
 
+    const { start_date, end_date, start_time, end_time, userId, productId, Hall, events } = req.body
     try {
-        const validatedData = createBookingSchema.parse(req.body)
-
-        const { start_date, end_date, start_time, end_time, userId } = validatedData
+        // const validatedData = createBookingSchema.parse(req.body)
 
         const startDate = new Date(start_date);
         const endDate = new Date(end_date);
@@ -182,7 +181,7 @@ const createBooking = async (req, res) => {
 
         const product = await prisma.product.findUnique({
             where: {
-                id: parseInt(productId),
+                id: productId,
             },
             select: { category: { select: { category_name: true } }, title: true }
         });
@@ -294,11 +293,11 @@ const createBooking = async (req, res) => {
             const startTimeFormatted = combinedStartTime;
             const endTimeFormatted = combinedEndTime;
 
-            return res.json(
+            return res.status(409).json(
                 {
-                    message: `Booking already exists from ${startDateFormatted} ${startTimeFormatted} to ${endDateFormatted} ${endTimeFormatted}`,
+                    message: `Booking already exists from ${startDateFormatted} to ${endDateFormatted}`,
                 },
-                { status: 409 }
+
             );
         }
 
@@ -395,14 +394,6 @@ const createBooking = async (req, res) => {
                 day: 'numeric',
             })}</td>
                             </tr>
-                            <tr>
-                                <th>Start Time:</th>
-                                <td>${newBooking.start_time ? newBooking.start_time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}</td>
-                            </tr>
-                            <tr>
-                                <th>End Time:</th>
-                                <td>${newBooking.end_time ? newBooking.end_time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""} </td>
-                    </tr>
                     <tr>
                     <th>User Name: </th>
                         <td> ${user?.email}</td>
@@ -424,7 +415,7 @@ const createBooking = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        return res.json({ booking: newBooking }, { status: 201 });
+        return res.status(201).json({ booking: newBooking, success: true });
 
     }
     catch (error) {
@@ -434,21 +425,23 @@ const createBooking = async (req, res) => {
                 errors: error.errors.map((e) => e.message)
             });
         }
-        return res.status(500).json({ success: false, message: 'Error creating booking' });
+        return res.status(500).json({ success: false, message: 'Error creating booking', error: error });
     }
 }
 
 //! Update Booking 
 const updateBooking = async (req, res) => {
 
+    const { id } = req.params;
+    const { is_approved } = req.body
 
     try {
         const updatedBooking = await prisma.event.update({
             where: {
-                id: data.id
+                id: Number(id)
             },
             data: {
-                is_approved: data.is_approved
+                is_approved: is_approved
             },
             include: {
                 Product: true,
@@ -465,7 +458,7 @@ const updateBooking = async (req, res) => {
 
         });
 
-        if (data.is_approved) {
+        if (is_approved) {
             // Fetch the user's email using the userId from the booking
             const user = await prisma.user.findUnique({
                 where: {

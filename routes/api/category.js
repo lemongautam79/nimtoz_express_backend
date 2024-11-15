@@ -26,11 +26,11 @@ const upload = multer({ storage });
 
 router.route('/')
     .get(getAllCategories)
-    .post(upload.single('category_icon'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), createCategory)
+    .post(upload.single('category_icon'), authenticateToken, authorizeRole('ADMIN'), createCategory)
 
 router.route('/:id')
-    .get(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), getCategoryById)
-    .put(upload.single('category_icon'), authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), updateCategory)
-    .delete(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), deleteCategoryById)
+    .get(getCategoryById)
+    .put(upload.single('category_icon'), authenticateToken, authorizeRole('ADMIN'), updateCategory)
+    .delete(authenticateToken, authorizeRole('ADMIN'), deleteCategoryById)
 
 export default router;

@@ -5,12 +5,12 @@ import { authenticateToken, authorizeRole } from "../../middleware/authenticatio
 const router = express.Router();
 
 router.route('/')
-    .get(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), getAllBusinesses)
-    .post(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), createBusiness)
+    .get(authenticateToken, authorizeRole('ADMIN'), getAllBusinesses)
+    .post(authenticateToken, authorizeRole('ADMIN'), createBusiness)
 
 router.route('/:id')
-    .get(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), getBusinessById)
-    .put(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), updateBusiness)
-    .delete(authenticateToken, authorizeRole('SUPER_ADMIN', 'ADMIN'), deleteBusinessById)
+    .get(authenticateToken, authorizeRole('ADMIN'), getBusinessById)
+    .put(authenticateToken, authorizeRole('ADMIN'), updateBusiness)
+    .delete(authenticateToken, authorizeRole('ADMIN'), deleteBusinessById)
 
 export default router;

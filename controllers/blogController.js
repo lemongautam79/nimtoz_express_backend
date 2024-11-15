@@ -60,7 +60,10 @@ const getBlogById = async (req, res) => {
     const { id } = req.params;
     try {
         const blog = await prisma.blog.findUnique({
-            where: { id: Number(id) }
+            where: { id: Number(id) },
+            include:{
+                author:true
+            }
         })
 
         if (!blog) return res.status(404).json({ error: `Blogs ${id} doesn't exist.` })
@@ -95,6 +98,7 @@ const createBlog = async (req, res) => {
 
     try {
         req.body.author_id = parseInt(req.body.author_id, 10);
+        // req.body.is_approved = Boolean(req.body.is_approved)
         const validatedData = blogSchema.parse(req.body)
 
         const blogImage = req.file ? `/uploads/blogs/${req.file.filename}` : null;
@@ -103,8 +107,9 @@ const createBlog = async (req, res) => {
             data: {
                 title: validatedData.title,
                 description: validatedData.description,
-                author_id: validatedData.author_id,
-                is_approved: validatedData.is_approved,
+                short_description: validatedData.title,
+                authorId: validatedData.author_id,
+                is_approved: Boolean(validatedData.is_approved),
                 image: blogImage
             }
         })
@@ -122,12 +127,14 @@ const createBlog = async (req, res) => {
 
 //! Update a blog
 const updateBlog = async (req, res) => {
-
     const { id } = req.params;
+    const { is_approved } = req.body
     try {
+        req.body.author_id = parseInt(req.body.author_id, 10);
+
         const validatedData = blogSchema.parse(req.body)
 
-        const blogImage = req.file ? `/uploads/blogs/${req.file.filename}` : null;
+        const blogImage = req.file ? `/uploads/blogs/${req.file.filename}` : validatedData.image || null;
 
         // const { category_name, category_icon } = validatedData;
 
@@ -136,8 +143,9 @@ const updateBlog = async (req, res) => {
             data: {
                 title: validatedData.title,
                 description: validatedData.description,
-                author_id: validatedData.author_id,
-                is_approved: validatedData.is_approved,
+                short_description: validatedData.title,
+                authorId: validatedData.author_id,
+                is_approved: Boolean(validatedData.is_approved),
                 image: blogImage
             }
         })

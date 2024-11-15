@@ -79,7 +79,7 @@ export const blogSchema = z.object({
     image: z.string().optional(),
     author_id: z.number(),
     // author_id: z.string(),
-    is_approved: z.boolean().optional(),
+    is_approved: z.string().optional(),
 });
 
 //! Product Validation Schema
@@ -109,81 +109,68 @@ export const productSchema = z.object({
     business: z.string(),
     product_image: z
         .array(z.string(), { message: "Product Image must be a valid string" }).optional(),
-    amenities: z
-        .array(z.object({
-            amenity_name: z.string().min(1, { message: "Amenity name is required." }),
-        })).optional(),
-    rules: z
-        .array(z.object({
-            description: z.string().min(1, { message: "Rule description is required." }),
-        })).optional(),
-    halls: z
-        .array(z.object({
-            hall_name: z.string().min(1, { message: "Hall name is required." }),
-            hall_capacity: z.number().min(1, { message: "Hall capacity must be at least 1." }),
-        })).optional(),
 
     //! 1. Multimedia
     multimedia: z
         .array(z.object({
-            multimedia_name: z.string().min(1, { message: "Photography or Videograpy is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            multimedia_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 2. Musical
     musical: z
         .array(z.object({
-            instrument_name: z.string().min(1, { message: "Musical Instrument is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            instrument_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 3. Extra Luxury
     luxury: z
         .array(z.object({
-            luxury_name: z.string().min(1, { message: "Luxury name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            luxury_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 4. Entertainment
     entertainment: z
         .array(z.object({
-            entertainment_name: z.string().min(1, { message: "Entertainment name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            entertainment_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 5. Meeting
     meeting: z
         .array(z.object({
-            meeting_name: z.string().min(1, { message: "Musical name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            meeting_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 6. Beauty & Decor
     beautydecor: z
         .array(z.object({
-            beauty_name: z.string().min(1, { message: "Beauty & Decor name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            beauty_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 7. Adventure
     adventure: z
         .array(z.object({
-            adventure_name: z.string().min(1, { message: "Adventure name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            adventure_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 8. Party Palace
     partypalace: z
         .array(z.object({
-            partypalace_name: z.string().min(1, { message: "Party Palace name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            partypalace_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 
     //! 9. CateringTent
     cateringtent: z
         .array(z.object({
-            catering_name: z.string().min(1, { message: "Catering or Tent name is required." }),
-            price: z.number().min(1, { message: "Price is required" }),
+            catering_name: z.string().optional(),
+            price: z.number().optional(),
         })).optional(),
 });
 
