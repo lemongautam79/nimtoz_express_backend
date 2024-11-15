@@ -293,12 +293,7 @@ const createBooking = async (req, res) => {
             const startTimeFormatted = combinedStartTime;
             const endTimeFormatted = combinedEndTime;
 
-            return res.status(409).json(
-                {
-                    message: `Booking already exists from ${startDateFormatted} to ${endDateFormatted}`,
-                },
-
-            );
+            return res.status(409).json(`Booking already exists from ${startDateFormatted} to ${endDateFormatted}`);
         }
 
         //! Dynamic category wise product 
@@ -434,6 +429,9 @@ const updateBooking = async (req, res) => {
 
     const { id } = req.params;
     const { is_approved } = req.body
+    // console.log(req.body)
+
+    // const is_approved = req.body.is_approved === 'true' ? "true" : "false";
 
     try {
         const updatedBooking = await prisma.event.update({
