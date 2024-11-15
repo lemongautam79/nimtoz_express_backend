@@ -16,6 +16,7 @@ const getAllProducts = async (req, res) => {
                     {
                         title: { contains: search.toLowerCase() },
                         address: { contains: search.toLowerCase() },
+                        district: { contains: search.toLowerCase() },
                     },
                 ]
             }
@@ -467,6 +468,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     const { id } = req.params;
+    console.log(req.body)
     try {
         const productImages = req.files ? req.files.map(file => ({ url: file.path })) : [];
 
@@ -487,6 +489,7 @@ const updateProduct = async (req, res) => {
 
         // Delete all possible category data first, regardless of incoming data
         await prisma.productImage.deleteMany({ where: { productId: Number(id) } });
+        
         await prisma.multimedia.deleteMany({ where: { productId: Number(id) } });
         await prisma.musical.deleteMany({ where: { productId: Number(id) } });
         await prisma.luxury.deleteMany({ where: { productId: Number(id) } });

@@ -98,6 +98,16 @@ const createContact = async (req, res) => {
 
         const { business_name, email, address, phone_number, contact_person } = validatedData;
 
+        const alreadyExists = await prisma.contactUs.findUnique({
+            where: { email: email }
+        })
+        if (alreadyExists) return res.status(404).json(`Email ${email} already exists`)
+
+        const alreadyPhone = await prisma.contactUs.findUnique({
+            where: { phone_number: phone_number }
+        })
+        if (alreadyPhone) return res.status(404).json(`Phone Number ${phone_number} already exists`)
+
         const contact = await prisma.contactUs.create({
             data: {
                 email: email,

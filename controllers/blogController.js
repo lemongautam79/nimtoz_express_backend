@@ -55,14 +55,38 @@ const getAllBlogs = async (req, res) => {
     }
 };
 
+const getStatBlogs = async (req, res) => {
+
+    try {
+        const { page, limit } = req.query;
+
+        const skip = (page - 1) * limit;
+        const take = parseInt(limit);
+
+        const blogs = await prisma.blog.findMany({
+            orderBy: { updatedAt: 'desc' },
+            skip,
+            take,
+        });
+
+
+        res.json({
+            success: true,
+            blogs
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 //! Get Blog by Id
 const getBlogById = async (req, res) => {
     const { id } = req.params;
     try {
         const blog = await prisma.blog.findUnique({
             where: { id: Number(id) },
-            include:{
-                author:true
+            include: {
+                author: true
             }
         })
 
@@ -165,6 +189,7 @@ const updateBlog = async (req, res) => {
 export {
     getAllBlogs,
     getBlogById,
+    getStatBlogs,
     deleteBlogById,
     createBlog,
     updateBlog,

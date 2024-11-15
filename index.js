@@ -26,6 +26,7 @@ import { countCategory, getCategoryByProductId } from './controllers/categoriesC
 import { getTopBookers } from './controllers/registerController.js';
 import { getBookingStats } from './controllers/bookingController.js';
 import { getHomePageProducts, getProductImagesById } from './controllers/productController.js';
+import { getStatBlogs } from './controllers/blogController.js';
 
 const PORT = process.env.PORT || 7000;
 
@@ -66,6 +67,7 @@ app.use('/homepageproducts', getHomePageProducts)
 app.use('/bookingstats', getBookingStats)
 app.use('/productimages/:id', getProductImagesById)
 app.use('/productcategoryid/:id', getCategoryByProductId)
+app.use('/stat-blogs', getStatBlogs)
 
 app.get('/404', (req, res) => {
     res.sendStatus(404);
