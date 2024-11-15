@@ -108,7 +108,19 @@ export const productSchema = z.object({
     location: z.string(),
     business: z.string(),
     product_image: z
-        .array(z.string(), { message: "Product Image must be a valid string" }).optional(),
+        .union([
+            z.string().refine(
+                (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path), // Accepts file paths or URLs
+                "Product Image must be a valid path or URL"
+            ),
+            z.array(
+                z.string().refine(
+                    (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path),
+                    "Product Image must be a valid path or URL"
+                )
+            )
+        ])
+        .refine((val) => Array.isArray(val) || typeof val === 'string', "Product Image must be a valid string or an array of strings"),
 
     //! 1. Multimedia
     multimedia: z
