@@ -88,13 +88,13 @@ const getHomePageProducts = async (req, res) => {
                 active: true
             }
         };
-    
+
         if (search) {
             whereClause.title = {
                 contains: search,
             };
         }
-    
+
         if (category) {
             whereClause.category = {
                 category_name: category,
@@ -103,7 +103,7 @@ const getHomePageProducts = async (req, res) => {
         if (district) {
             whereClause.districtId = parseInt(district);  // Ensure district is being passed as an integer
         }
-    
+
         // Fetch the products based on the query parameters (all products if no filter is provided)
         const products = await prisma.product.findMany({
             where: Object.keys(whereClause).length ? whereClause : undefined,
@@ -192,7 +192,7 @@ const getHomePageProducts = async (req, res) => {
                 updatedAt: "desc"
             }
         });
-    
+
         // Calculate the minimum price for each product based on related categories' minimum prices
         const productsWithMinPrice = products.map(product => {
             const minPrice = Math.min(
@@ -206,7 +206,7 @@ const getHomePageProducts = async (req, res) => {
                 ...(product.cateringtent.map(item => item.price) || []),
                 ...(product.meeting.map(item => item.price) || []),
             );
-    
+
             return {
                 ...product,
                 minPrice: minPrice || 0  // Set to 0 if no price data exists
@@ -216,7 +216,7 @@ const getHomePageProducts = async (req, res) => {
         // Respond with the products
         res.json(productsWithMinPrice);
 
-        
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -470,7 +470,21 @@ const updateProduct = async (req, res) => {
     const { id } = req.params;
     console.log(req.body)
     try {
-        const productImages = req.files ? req.files.map(file => ({ url: file.path })) : [];
+
+        const uploadedFiles = req.files ? req.files.map(file => ({ url: file.path })) : [];
+
+        // Parse productImages from body if provided
+        const existingImages = req.body.product_image
+            ? Array.isArray(req.body.product_image)
+                ? req.body.product_image
+                : [req.body.product_image]  // Treat it as an array if it's a single string
+            : [];
+
+
+        const productImages = [
+            ...uploadedFiles,
+            ...existingImages.map(url => ({ url }))
+        ];
 
         const parsedData = {
             ...req.body,
@@ -489,7 +503,7 @@ const updateProduct = async (req, res) => {
 
         // Delete all possible category data first, regardless of incoming data
         await prisma.productImage.deleteMany({ where: { productId: Number(id) } });
-        
+
         await prisma.multimedia.deleteMany({ where: { productId: Number(id) } });
         await prisma.musical.deleteMany({ where: { productId: Number(id) } });
         await prisma.luxury.deleteMany({ where: { productId: Number(id) } });

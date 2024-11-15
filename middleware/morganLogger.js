@@ -18,6 +18,22 @@ const statusColors = {
 };
 const resetColor = '\x1b[0m';
 
+let requestBodySize = 0;
+app.use((req, res, next) => {
+    // Reset the body size before each request
+    requestBodySize = 0;
+
+    // If the request is JSON or form-data, calculate the body size
+    req.on('data', chunk => {
+        requestBodySize += chunk.length;
+    });
+
+    req.on('end', () => {
+        next();  // Proceed to next middleware or route handler
+    });
+});
+
+
 // Custom logger middleware
 export const customLogger = (req, res, next) => {
     // Define a custom log format function
@@ -36,8 +52,14 @@ export const customLogger = (req, res, next) => {
         // Format the timestamp using moment
         const timestamp = moment().format('YYYY-MM-DD HH:mm:ss Z   ');
 
+        // Include the request size (Body size in bytes)
+        const requestSize = requestBodySize || 'unknown';
+
+        // Get the response size (from Content-Length header)
+        const responseSize = res.get('Content-Length') || 'unknown';
+
         // Format the log entry
-        const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor}`;
+        const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} bytes Req: ${requestSize} bytes`;
 
         return logEntry;
     };

@@ -27,6 +27,7 @@ import { getTopBookers } from './controllers/registerController.js';
 import { getBookingStats } from './controllers/bookingController.js';
 import { getHomePageProducts, getProductImagesById } from './controllers/productController.js';
 import { getStatBlogs } from './controllers/blogController.js';
+import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 
 const PORT = process.env.PORT || 7000;
 
@@ -73,13 +74,14 @@ app.get('/404', (req, res) => {
     res.sendStatus(404);
 })
 
-app.get("/user", (req, res) => {
-    try {
-        throw new Error("Invalid user");
-    } catch (error) {
-        res.status(500).send("Error!");
-    }
-});
+app.get("*", (req, res, next) => {
+    const err = new Error(`${req.originalUrl} doesn't exist`);
+    err.statusCode = 404;
+    err.status = 'fail';
+    next(err)
+})
+
+app.use(globalErrorHandler)
 
 const ip = "0.0.0.0"
 
