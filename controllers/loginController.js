@@ -13,11 +13,11 @@ const loginUser = async (req, res) => {
 
     const foundUser = await prisma.user.findUnique({ where: { email } })
 
-    if (!foundUser) return res.status(404).json({ success: false, message: "User Not found" })
+    if (!foundUser) return res.status(404).json("User Not Found")
 
     const validPassword = await bcrypt.compare(password, foundUser.password);
 
-    if (!validPassword) return res.status(401).json({ success: false, message: 'Invalid password' });
+    if (!validPassword) return res.status(404).json('Invalid password');
 
     const accessToken = generateAccesstoken(foundUser);
     const refreshToken = generateRefreshToken(foundUser);
@@ -37,7 +37,7 @@ const loginUser = async (req, res) => {
                 errors: error.errors.map((e) => e.message)
             });
         }
-        res.status(400).json({ success: false, error: error.message });
+        res.status(400).json({ success: false, message: error.message });
     }
 }
 

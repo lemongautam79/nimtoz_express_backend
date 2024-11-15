@@ -28,6 +28,9 @@ const getAllBusinesses = async (req, res) => {
 
         const businesses = await prisma.venue.findMany({
             where,
+            include:{
+                products:true
+            },
             orderBy: { updatedAt: 'desc' },
             skip,
             take,

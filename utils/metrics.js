@@ -29,6 +29,5 @@ export function startMetricsServer() {
     })
 
     app.listen(9000, () => {
-        console.log(`Metrics Server at: http://localhost:9000`)
     })
 }

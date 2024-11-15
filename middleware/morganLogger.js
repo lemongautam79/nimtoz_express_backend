@@ -32,7 +32,6 @@ export const customLogger = (req, res, next) => {
         const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
 
         const statusMessage = res.statusMessage || '';
-        // console.log(statusMessage)
 
         // Format the timestamp using moment
         const timestamp = moment().format('YYYY-MM-DD HH:mm:ss Z   ');

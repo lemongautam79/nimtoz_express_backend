@@ -22,9 +22,10 @@ import forgotPassword from './routes/api/forgotPassword.js'
 import resetPassword from './routes/api/resetPassword.js'
 import stats from './routes/api/statistics.js'
 
-import { countCategory } from './controllers/categoriesController.js';
+import { countCategory, getCategoryByProductId } from './controllers/categoriesController.js';
 import { getTopBookers } from './controllers/registerController.js';
 import { getBookingStats } from './controllers/bookingController.js';
+import { getHomePageProducts, getProductImagesById } from './controllers/productController.js';
 
 const PORT = process.env.PORT || 7000;
 
@@ -61,7 +62,10 @@ app.use('/refresh_token', refresh)
 app.use('/forgot-password', forgotPassword)
 app.use('/reset-password', resetPassword)
 app.use('/stats', stats)
+app.use('/homepageproducts', getHomePageProducts)
 app.use('/bookingstats', getBookingStats)
+app.use('/productimages/:id', getProductImagesById)
+app.use('/productcategoryid/:id', getCategoryByProductId)
 
 app.get('/404', (req, res) => {
     res.sendStatus(404);
