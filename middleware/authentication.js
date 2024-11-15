@@ -19,3 +19,14 @@ export const authorizeRole = (role) => {
         next();
     }
 }
+
+// export const authorizeRole = (roles) => {
+//     return (req, res, next) => {
+//         // Check if req.user.role exists and matches one of the allowed roles
+//         console.log(roles, req.user.role)
+//         if (!roles.includes(req.user.role)) {
+//             return res.status(401).json({ message: "Unauthorized" });
+//         }
+//         next();
+//     };
+// };

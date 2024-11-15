@@ -5,7 +5,7 @@ import { authenticateToken, authorizeRole } from "../../middleware/authenticatio
 const router = express.Router();
 
 router.route('/')
-.get(authenticateToken, authorizeRole('ADMIN'), getAllContacts)
+    .get(authenticateToken, authorizeRole('ADMIN'), getAllContacts)
     .post(createContact)
 
 router.route('/:id')
