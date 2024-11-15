@@ -79,7 +79,7 @@ export const blogSchema = z.object({
     image: z.string().optional(),
     author_id: z.number(),
     // author_id: z.string(),
-    is_approved: z.string().optional(),
+    is_approved: z.boolean().optional(),
 });
 
 //! Product Validation Schema

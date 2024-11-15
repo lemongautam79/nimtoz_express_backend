@@ -120,10 +120,18 @@ const deleteBlogById = async (req, res) => {
 //! Create new Blog 
 const createBlog = async (req, res) => {
 
+    const { is_approved } = req.body;
+
     try {
         req.body.author_id = parseInt(req.body.author_id, 10);
         // req.body.is_approved = Boolean(req.body.is_approved)
-        const validatedData = blogSchema.parse(req.body)
+
+        const isApproved = is_approved === 'true';
+
+        const validatedData = blogSchema.parse({
+            ...req.body,
+            is_approved: isApproved, // Use the converted value in validation
+        });
 
         const blogImage = req.file ? `/uploads/blogs/${req.file.filename}` : null;
 
@@ -133,7 +141,7 @@ const createBlog = async (req, res) => {
                 description: validatedData.description,
                 short_description: validatedData.title,
                 authorId: validatedData.author_id,
-                is_approved: Boolean(validatedData.is_approved),
+                is_approved: validatedData.is_approved,
                 image: blogImage
             }
         })
@@ -156,7 +164,12 @@ const updateBlog = async (req, res) => {
     try {
         req.body.author_id = parseInt(req.body.author_id, 10);
 
-        const validatedData = blogSchema.parse(req.body)
+        const isApproved = is_approved === 'true';
+
+        const validatedData = blogSchema.parse({
+            ...req.body,
+            is_approved: isApproved, // Use the converted value in validation
+        });
 
         const blogImage = req.file ? `/uploads/blogs/${req.file.filename}` : validatedData.image || null;
 
@@ -169,7 +182,7 @@ const updateBlog = async (req, res) => {
                 description: validatedData.description,
                 short_description: validatedData.title,
                 authorId: validatedData.author_id,
-                is_approved: Boolean(validatedData.is_approved),
+                is_approved: validatedData.is_approved,
                 image: blogImage
             }
         })
