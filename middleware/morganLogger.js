@@ -7,6 +7,8 @@ import moment from 'moment'
 import morgan from "morgan";
 
 const app = express();
+app.set("trust proxy", "loopback, linklocal, uniquelocal");
+
 
 // Define ANSI color codes for different status ranges
 const statusColors = {
@@ -50,7 +52,7 @@ export const customLogger = (req, res, next) => {
         const statusMessage = res.statusMessage || '';
 
         // Format the timestamp using moment
-        const timestamp = moment().format('YYYY-MM-DD HH:mm:ss Z   ');
+        const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
 
         // Include the request size (Body size in bytes)
         const requestSize = requestBodySize || 'unknown';
@@ -58,8 +60,13 @@ export const customLogger = (req, res, next) => {
         // Get the response size (from Content-Length header)
         const responseSize = res.get('Content-Length') || 'unknown';
 
+        // Get the client IP address
+        const clientIp = req.ip || req.connection.remoteAddress || 'unknown';
+        // const clientIp = req.connection.remoteAddress || 'unknown';
+
         // Format the log entry
-        const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} bytes Req: ${requestSize} bytes`;
+        const logEntry = `${statusColor} ${timestamp} ${clientIp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} Req: ${requestSize}`;
+        // const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} bytes Req: ${requestSize} bytes`;
 
         return logEntry;
     };
