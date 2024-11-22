@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { registerSchema } from "../utils/validationSchema.js";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { generateAccesstoken, generateRefreshToken } from "../auth/generateTokens.js";
 import { z } from 'zod'
 
@@ -133,7 +133,7 @@ const createUser = async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword =  bcrypt.hashSync(password, 10)
 
         const user = await prisma.user.create({
             data: {
