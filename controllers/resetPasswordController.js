@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { resetPasswordSchema } from "../utils/validationSchema.js";
-import { hash } from "bcrypt";
+import { hashSync } from "bcryptjs";
 import { z } from 'zod'
 
 const prisma = new PrismaClient();
@@ -25,7 +25,7 @@ const resetPassword = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid or expired token" })
         }
 
-        const hashedPassword = await hash(password, 10);
+        const hashedPassword = hashSync(password, 10);
 
         await prisma.user.update({
             where: { id: user.id },
