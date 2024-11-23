@@ -376,11 +376,12 @@ const deleteProductById = async (req, res) => {
 //! Create new Product 
 const createProduct = async (req, res) => {
 
+    // const productImages = req.files ? req.files.map(file => ({ url: file.path })) : [];
+    const productImages = req.files ? req.files.map(file => ({ url: file.path.replace("\\", "/") })) : [];
     try {
         // req.body.author_id = parseInt(req.body.author_id, 10);
         // const productImages = req.body.product_image;
 
-        const productImages = req.files ? req.files.map(file => ({ url: file.path })) : [];
         const parsedData = {
             ...req.body,
             multimedia: typeof req.body.multimedia === 'string' ? JSON.parse(req.body.multimedia) : req.body.multimedia,
@@ -469,23 +470,24 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     const { id } = req.params;
     console.log(req.body)
+    const uploadedFiles = req.files ? req.files.map(file => ({ url: file.path })) : [];
+
+
+
+    // Parse productImages from body if provided
+    const existingImages = req.body.product_image
+        ? Array.isArray(req.body.product_image)
+            ? req.body.product_image
+            : [req.body.product_image]  // Treat it as an array if it's a single string
+        : [];
+
+
+    const productImages = [
+        ...uploadedFiles,
+        ...existingImages.map(url => ({ url }))
+    ];
+
     try {
-
-        const uploadedFiles = req.files ? req.files.map(file => ({ url: file.path })) : [];
-
-        // Parse productImages from body if provided
-        const existingImages = req.body.product_image
-            ? Array.isArray(req.body.product_image)
-                ? req.body.product_image
-                : [req.body.product_image]  // Treat it as an array if it's a single string
-            : [];
-
-
-        const productImages = [
-            ...uploadedFiles,
-            ...existingImages.map(url => ({ url }))
-        ];
-
         const parsedData = {
             ...req.body,
             multimedia: typeof req.body.multimedia === 'string' ? JSON.parse(req.body.multimedia) : req.body.multimedia,

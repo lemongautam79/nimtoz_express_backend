@@ -107,20 +107,34 @@ export const productSchema = z.object({
     category: z.string(),
     location: z.string(),
     business: z.string(),
-    product_image: z
-        .union([
-            z.string().refine(
-                (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path), // Accepts file paths or URLs
-                "Product Image must be a valid path or URL"
-            ),
-            z.array(
-                z.string().refine(
-                    (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path),
-                    "Product Image must be a valid path or URL"
-                )
-            )
-        ])
-        .refine((val) => Array.isArray(val) || typeof val === 'string', "Product Image must be a valid string or an array of strings"),
+    // product_image: z
+    //     .union([
+    //         z.string().refine(
+    //             (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path), // Accepts file paths or URLs
+    //             "Product Image must be a valid path or URL"
+    //         ),
+    //         z.array(
+    //             z.string().refine(
+    //                 (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path),
+    //                 "Product Image must be a valid path or URL"
+    //             )
+    //         )
+    //     ])
+    //     .refine((val) => Array.isArray(val) || typeof val === 'string', "Product Image must be a valid string or an array of strings"),
+
+    //! Create Product wala 
+    // product_image: z
+    // .union([
+    //     z.string().refine((path) => /^[a-zA-Z0-9_\\/:\.\-\s]+$/.test(path), "Product Image must be a valid path or URL"),
+    //     z.array(
+    //         z.string().refine(
+    //             (path) => /^[a-zA-Z0-9_\\/:\.\-\s]+$/.test(path),
+    //             "Product Image must be a valid path or URL"
+    //         )
+    //     )
+    // ])
+    // .refine((val) => Array.isArray(val) || typeof val === 'string', "Product Image must be a valid string or an array of strings"),
+    product_image:z.optional(),
 
     //! 1. Multimedia
     multimedia: z
