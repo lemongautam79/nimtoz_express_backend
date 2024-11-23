@@ -1,6 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
-    binaryTargets = ["native"]
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-1.0.x"]
 }
 
 datasource db {
@@ -67,7 +67,7 @@ model Multimedia {
     updatedAt DateTime @updatedAt @map("updated_at")
     Product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId Int?
-    Bs    Event[]  @relation("EventMultimedia")
+    Bs        Event[]  @relation("EventMultimedia")
 }
 
 //! 2. Musical Beats
@@ -308,7 +308,7 @@ model Blog {
     createdAt         DateTime @default(now()) @map("created_at")
     updatedAt         DateTime @updatedAt @map("updated_at")
 
-    author    User? @relation("BlogAuthor", fields: [authorId], references: [id])
+    author   User? @relation("BlogAuthor", fields: [authorId], references: [id])
     authorId Int?
 
     approved_by    User? @relation("ApprovedBlogs", fields: [approved_by_id], references: [id])

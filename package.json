@@ -4,8 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon index"
+    "dev": "nodemon index.js",
+    "build": "esbuild index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs",
+    "start": "node dist/index.cjs"
   },
   "keywords": [],
   "author": "",
@@ -15,11 +16,13 @@
     "@prisma/client": "^5.22.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.5",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
+    "esbuild": "^0.24.0",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",

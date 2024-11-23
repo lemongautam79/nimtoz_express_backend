@@ -21,7 +21,7 @@ import eventType from './routes/api/eventType.js'
 import forgotPassword from './routes/api/forgotPassword.js'
 import resetPassword from './routes/api/resetPassword.js'
 import stats from './routes/api/statistics.js'
-
+import compression from 'compression'
 import { countCategory, getCategoryByProductId } from './controllers/categoriesController.js';
 import { getTopBookers } from './controllers/registerController.js';
 import { getBookingStats } from './controllers/bookingController.js';
@@ -32,6 +32,13 @@ import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 const PORT = process.env.PORT || 7000;
 
 const app = express()
+app.use(compression({
+    threshold: 102400,  // Compress only if the response is larger than 100 KB
+    filter: (req, res) => {
+        // Optional: Apply custom filtering logic for which responses should be compressed
+        return res.statusCode === 200;  // Only compress 200 OK responses
+    }
+}));
 
 app.use(cors(corsOptions))
 app.use('/uploads', express.static('uploads'));

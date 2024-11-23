@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { resetPasswordSchema } from "../utils/validationSchema.js";
-import { hashSync } from "bcryptjs";
+import pkg from 'bcryptjs';
+const { hashSync } = pkg;
 import { z } from 'zod'
 
 const prisma = new PrismaClient();
