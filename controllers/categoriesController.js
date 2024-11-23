@@ -39,7 +39,12 @@ const getAllCategories = async (req, res) => {
         const categories = await prisma.category.findMany({
             where,
             include: {
-                products: true
+                products: {
+                    select:{
+                        id:true,
+                        title:true,
+                    }
+                }
             },
             orderBy: { updatedAt: 'desc' },
             skip,
@@ -174,9 +179,9 @@ const updateCategory = async (req, res) => {
         const validatedData = categorySchema.parse(req.body)
 
         const categoryIconPath = req.file
-        ? `/uploads/categories/${req.file.filename}` // New file path
-        : validatedData.category_icon || null; 
-        
+            ? `/uploads/categories/${req.file.filename}` // New file path
+            : validatedData.category_icon || null;
+
         // const { category_name, category_icon } = validatedData;
 
         const category = await prisma.category.update({
