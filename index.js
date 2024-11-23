@@ -32,16 +32,17 @@ import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 const PORT = process.env.PORT || 7000;
 
 const app = express()
-app.use(compression({
-    threshold: 102400,  // Compress only if the response is larger than 100 KB
-    filter: (req, res) => {
-        // Optional: Apply custom filtering logic for which responses should be compressed
-        return res.statusCode === 200;  // Only compress 200 OK responses
-    }
-}));
+
+// app.use(compression({
+//     threshold: 102400,  // Compress only if the response is larger than 100 KB
+//     filter: (req, res) => {
+//         // Optional: Apply custom filtering logic for which responses should be compressed
+//         return res.statusCode === 200;  // Only compress 200 OK responses
+//     }
+// }));
 
 // app.use(cors(corsOptions))
-// app.use(cors())
+app.use(cors())
 app.options('*', cors());
 app.use('/uploads', express.static('uploads'));
 
