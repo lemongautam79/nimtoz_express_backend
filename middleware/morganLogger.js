@@ -65,8 +65,8 @@ export const customLogger = (req, res, next) => {
         // const clientIp = req.connection.remoteAddress || 'unknown';
 
         // Format the log entry
-        const logEntry = `${statusColor} ${timestamp} ${clientIp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} Req: ${requestSize}`;
-        // const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} bytes Req: ${requestSize} bytes`;
+        // const logEntry = `${statusColor} ${timestamp} ${clientIp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} Req: ${requestSize}`;
+        const logEntry = `${statusColor} ${timestamp} ${tokens.method(req, res)} ${fullUrl} - ${tokens.status(req, res)} : ${statusMessage} ${tokens['response-time'](req, res)}ms${resetColor} - Res: ${responseSize} bytes Req: ${requestSize} bytes`;
 
         return logEntry;
     };
