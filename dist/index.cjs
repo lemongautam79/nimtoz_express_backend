@@ -62384,6 +62384,8 @@ var import_cors = __toESM(require_lib3(), 1);
 // config/allowedOrigins.js
 var allowedOrigins = [
   "https://www.nimtoz.com",
+  "http://www.nimtoz.com",
+  "http://nimtoz.com",
   "http://localhost:3000",
   "http://192.168.1.135:7000"
 ];
@@ -62397,6 +62399,7 @@ var corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  credentials: true,
   optionsSuccessStatus: 200
 };
 var corsOptions_default = corsOptions;
@@ -66386,19 +66389,33 @@ var productSchema = z2.object({
   category: z2.string(),
   location: z2.string(),
   business: z2.string(),
-  product_image: z2.union([
-    z2.string().refine(
-      (path4) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path4),
-      // Accepts file paths or URLs
-      "Product Image must be a valid path or URL"
-    ),
-    z2.array(
-      z2.string().refine(
-        (path4) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path4),
-        "Product Image must be a valid path or URL"
-      )
-    )
-  ]).refine((val) => Array.isArray(val) || typeof val === "string", "Product Image must be a valid string or an array of strings"),
+  // product_image: z
+  //     .union([
+  //         z.string().refine(
+  //             (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path), // Accepts file paths or URLs
+  //             "Product Image must be a valid path or URL"
+  //         ),
+  //         z.array(
+  //             z.string().refine(
+  //                 (path) => /^[a-zA-Z0-9_\\/:\.-]+$/.test(path),
+  //                 "Product Image must be a valid path or URL"
+  //             )
+  //         )
+  //     ])
+  //     .refine((val) => Array.isArray(val) || typeof val === 'string', "Product Image must be a valid string or an array of strings"),
+  //! Create Product wala 
+  // product_image: z
+  // .union([
+  //     z.string().refine((path) => /^[a-zA-Z0-9_\\/:\.\-\s]+$/.test(path), "Product Image must be a valid path or URL"),
+  //     z.array(
+  //         z.string().refine(
+  //             (path) => /^[a-zA-Z0-9_\\/:\.\-\s]+$/.test(path),
+  //             "Product Image must be a valid path or URL"
+  //         )
+  //     )
+  // ])
+  // .refine((val) => Array.isArray(val) || typeof val === 'string', "Product Image must be a valid string or an array of strings"),
+  product_image: z2.optional(),
   //! 1. Multimedia
   multimedia: z2.array(z2.object({
     multimedia_name: z2.string().optional(),
@@ -66517,7 +66534,12 @@ var getAllCategories = async (req, res) => {
     const categories = await prisma.category.findMany({
       where,
       include: {
-        products: true
+        products: {
+          select: {
+            id: true,
+            title: true
+          }
+        }
       },
       orderBy: { updatedAt: "desc" },
       skip: skip2,
@@ -67014,7 +67036,12 @@ var getAllLocations = async (req, res) => {
     const locations = await prisma4.district.findMany({
       where,
       include: {
-        products: true
+        products: {
+          select: {
+            id: true,
+            title: true
+          }
+        }
       },
       orderBy: { updatedAt: "desc" },
       skip: skip2,
@@ -67888,8 +67915,8 @@ var deleteProductById = async (req, res) => {
   }
 };
 var createProduct = async (req, res) => {
+  const productImages = req.files ? req.files.map((file) => ({ url: file.path.replace("\\", "/") })) : [];
   try {
-    const productImages = req.files ? req.files.map((file) => ({ url: file.path })) : [];
     const parsedData = {
       ...req.body,
       multimedia: typeof req.body.multimedia === "string" ? JSON.parse(req.body.multimedia) : req.body.multimedia,
@@ -67970,13 +67997,13 @@ var createProduct = async (req, res) => {
 var updateProduct = async (req, res) => {
   const { id: id2 } = req.params;
   console.log(req.body);
+  const uploadedFiles = req.files ? req.files.map((file) => ({ url: file.path })) : [];
+  const existingImages = req.body.product_image ? Array.isArray(req.body.product_image) ? req.body.product_image : [req.body.product_image] : [];
+  const productImages = [
+    ...uploadedFiles,
+    ...existingImages.map((url) => ({ url }))
+  ];
   try {
-    const uploadedFiles = req.files ? req.files.map((file) => ({ url: file.path })) : [];
-    const existingImages = req.body.product_image ? Array.isArray(req.body.product_image) ? req.body.product_image : [req.body.product_image] : [];
-    const productImages = [
-      ...uploadedFiles,
-      ...existingImages.map((url) => ({ url }))
-    ];
     const parsedData = {
       ...req.body,
       multimedia: typeof req.body.multimedia === "string" ? JSON.parse(req.body.multimedia) : req.body.multimedia,
@@ -70464,13 +70491,6 @@ var globalErrorHandler = (err, req, res, next) => {
 // index.js
 var PORT = process.env.PORT || 7e3;
 var app3 = (0, import_express17.default)();
-app3.use((0, import_compression.default)({
-  threshold: 102400,
-  // Compress only if the response is larger than 100 KB
-  filter: (req, res) => {
-    return res.statusCode === 200;
-  }
-}));
 app3.use((0, import_cors.default)(corsOptions_default));
 app3.use("/uploads", import_express17.default.static("uploads"));
 app3.use(import_express17.default.urlencoded({ extended: false }));
