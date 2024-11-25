@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { resetPasswordSchema } from "../utils/validationSchema.js";
 import pkg from 'bcryptjs';
 const { hashSync } = pkg;
 import { z } from 'zod'
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
 
 const resetPassword = async (req, res) => {
 

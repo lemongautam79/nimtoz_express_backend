@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { categorySchema } from "../utils/validationSchema.js";
 import { z } from 'zod'
 
-const prisma = new PrismaClient();
-
+import { prisma } from '../config/prisma.js'
 
 //! Get All Categories
 // const getAllCategories = async (req, res) => {
@@ -40,9 +38,9 @@ const getAllCategories = async (req, res) => {
             where,
             include: {
                 products: {
-                    select:{
-                        id:true,
-                        title:true,
+                    select: {
+                        id: true,
+                        title: true,
                     }
                 }
             },

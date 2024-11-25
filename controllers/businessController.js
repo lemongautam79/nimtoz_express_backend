@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { venueSchema } from "../utils/validationSchema.js";
 import { z } from 'zod'
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
+
 
 //! Get All Business
 const getAllBusinesses = async (req, res) => {

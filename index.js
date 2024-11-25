@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import { customLogger } from './middleware/morganLogger.js';
 import cookieParser from 'cookie-parser';

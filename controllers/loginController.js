@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs'
 import { generateAccesstoken, generateRefreshToken } from "../auth/generateTokens.js";
-import { PrismaClient } from '@prisma/client';
 import { loginSchema } from '../utils/validationSchema.js';
 import { z } from 'zod'
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
+
 
 //! Login User
 const loginUser = async (req, res) => {
@@ -15,7 +15,7 @@ const loginUser = async (req, res) => {
 
     if (!foundUser) return res.status(404).json("User Not Found")
 
-    const validPassword =  bcrypt.compareSync(password, foundUser.password);
+    const validPassword = bcrypt.compareSync(password, foundUser.password);
 
     if (!validPassword) return res.status(404).json('Invalid password');
 
