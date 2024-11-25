@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer'
 import { createBookingSchema } from "../utils/validationSchema.js";
 import { addMonths, startOfMonth, endOfMonth, format } from 'date-fns';
 
 import { z } from 'zod'
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
+
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',

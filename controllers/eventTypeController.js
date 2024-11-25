@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { eventTypeSchema } from "../utils/validationSchema.js";
 
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
+
 
 //! Get all EventType
 const getAllEventTypes = async (req, res) => {

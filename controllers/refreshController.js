@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken'
 import { generateAccesstoken, generateRefreshToken } from '../auth/generateTokens.js';
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
 
 const refreshToken = async (req, res) => {
 

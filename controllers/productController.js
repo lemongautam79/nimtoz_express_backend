@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { productSchema } from "../utils/validationSchema.js";
 import { z } from 'zod'
 
-const prisma = new PrismaClient();
+import { prisma } from '../config/prisma.js'
 
 //! Get All Products
 const getAllProducts = async (req, res) => {

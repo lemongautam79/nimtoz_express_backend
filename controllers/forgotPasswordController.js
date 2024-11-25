@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { forgotPasswordSchema } from "../utils/validationSchema.js";
 import crypto from 'crypto'
 import { z } from 'zod'
 import nodemailer from 'nodemailer'
 
-const prisma = new PrismaClient()
+import { prisma } from '../config/prisma.js'
+
 
 const forgotPassword = async (req, res) => {
 
